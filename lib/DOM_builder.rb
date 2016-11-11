@@ -1,28 +1,32 @@
 class DOMBuilder
 
   def build_from_tree(tree)
+    stream = "<!doctype html>\n"
+
     tree.root.dfs do |node|
       tag = node.tag
 
       case tag.function
       when :open, :open_close
-        print "<#{tag.type}"
+        stream << "<#{tag.type}"
         unless tag.attributes.empty?
           tag.attributes.each do |key, values|
-            print " #{key}='"
+            stream << " #{key}='"
             values.each do |value|
-              print "#{value} "
+              stream << "#{value} "
             end
-            print "'"
+            stream << "'"
           end
         end
-        puts ">"
+        stream << ">\n"
       when :content
-        puts "#{tag.attributes[:text]}"
-        puts "</#{node.parent.tag.type}>"
+        stream << "#{tag.attributes[:text]}\n"
+        stream << "</#{node.parent.tag.type}>\n"
       else
-        puts "uh-oh."
+        stream << "uh-oh.\n"
       end
     end
+
+    stream
   end
 end

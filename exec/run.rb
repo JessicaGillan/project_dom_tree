@@ -11,8 +11,10 @@ filepath = Dir.pwd + '/lib/test.html'
 loader = DOMLoader.new
 
 dom_units = loader.load(filepath)
+
 tree = HTMLTree.new(dom_units)
 
-DOMBuilder.new.build_from_tree(tree)
+NodeRenderer.new(tree).render
 
-# NodeRenderer.new(tree).render
+string = DOMBuilder.new.build_from_tree(tree)
+File.open('rebuilt.html', 'w') { |f| f.write(string) }
