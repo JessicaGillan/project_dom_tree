@@ -1,4 +1,5 @@
 class HTMLTree
+  DOCTYPE = /<!\s*\w+\s*\w*>/
   attr_reader :root
 
   def initialize(dom)
@@ -6,10 +7,14 @@ class HTMLTree
     @parser = Parser.new
 
     build_html_tree(dom)
+    puts "Node count: #{@root.sub_tree_count}"
   end
 
 
   def build_html_tree(html_snippets)
+    # Delete <!doctype html>
+    html_snippets.delete_at(0) if html_snippets[0].match(DOCTYPE)
+
     # Parse each html snippet in to a tag
     tags =  html_snippets.map do |snippet|
               @parser.parse_tag(snippet)
@@ -17,8 +22,8 @@ class HTMLTree
 
     # Set the root node and recursively add children
     # for each html_snippet by passing tags and current index
-    @root ||= Node.new(tags[1]) # Skip <!doctype html>
-    index = 1
+    @root ||= Node.new(tags[0])
+    index = 0
 
     @root.add_child(tags, index + 1)
   end

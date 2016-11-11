@@ -27,7 +27,7 @@ class Parser
 
     if tag_function == :content
       # Set attributes equal to string contents
-      attribute_hash = { "text" => html_snippet }
+      attribute_hash = { :text => html_snippet }
     else
       tag_type = get_tag_type(html_snippet)
 

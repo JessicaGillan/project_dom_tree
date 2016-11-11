@@ -4,17 +4,20 @@ require 'Parser'
 
 describe TreeSearcher do
   let(:data) { ["<!doctype html>",
-                "<div>",
+                "<div class='parent testing'>",
                 "div text before",
-                "<p>",
+                "<p class='sibling testing'>",
                 "p text",
                 "</p>",
-                "<div>",
+                "<div class='immediate parent'>",
                 "more div text",
                 "</div>",
                 "div text after",
                 "</div>"] }
+  let(:attr_data) { ["<h1 id='dolphin bluewhale shark' class='animal amphibian foo' draggable='false'>",
+              "<p class='foo bar' id='baz' name='fozzie'>"] }
   let(:tree) { HTMLTree.new(data) }
+  let(:attr_tree) { HTMLTree.new(attr_data) }
   let(:searcher) { TreeSearcher.new(tree) }
 
   describe "#initialize" do
@@ -33,23 +36,26 @@ describe TreeSearcher do
     end
 
     it "returns a collection of all the nodes that exactly match the search criteria" do
-      
+      class_searcher = TreeSearcher.new(attr_tree)
+      expect(class_searcher.search_by(:class, 'animal').length).to eq 1
+      expect(class_searcher.search_by(:class, "foo").length).to eq 2
+      expect(searcher.search_by(:text, "more div text").length).to eq 1
     end
   end
 
   describe "#search_descendents" do
-    it "searches all the descendents of a given node"
+    it "searches all the descendents of a given node" do
+      class_searcher = TreeSearcher.new(attr_tree)
+      expect(class_searcher.search_descendents(attr_tree.root, :class, 'animal').length).to eq 1
+      expect(class_searcher.search_descendents(attr_tree.root, :class, "foo").length).to eq 2
+    end
   end
 
   describe "#search_ancestors" do
-    it "searches the ancestors of a given node"
+    it "searches the ancestors of a given node" do
+      node = searcher.search_by(:text, "more div text")[0]
+      expect(searcher.search_ancestors(node, :class, "testing").length).to eq 1
+      expect(searcher.search_ancestors(node, :class, "parent").length).to eq 2
+    end
   end
 end
-
-# Search for and return a collection with all nodes exactly matching
-# the name, text, id, or class provided, e.g:
-#
-# Search only the descendents (nodes "lower" in the tree)
-# of a particular node, e.g:
-#
-# Search just the direct ancestors of a particular node in similar ways, e.g.:
