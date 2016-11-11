@@ -6,6 +6,20 @@ class DOM
     @html_units = format_data(data)
   end
 
+  def each
+    @html_units.each do |unit|
+      yield(unit)
+    end
+  end
+
+  def [](index)
+    @html_units[index]
+  end
+
+  def delete_at(index)
+    @html_units.delete_at(index)
+  end
+
   private
 
   def format_data(data)
@@ -22,11 +36,5 @@ class DOM
 
     # Return HTML array w/o empty lines
     d.delete_if { |line| line.empty? }
-  end
-
-  def each
-    @html_units.each do |unit|
-      yield(unit)
-    end
   end
 end

@@ -61,6 +61,21 @@ class Node
     end
   end
 
+  # Depth First Search
+  def dfs(node = self)
+    stack = [self]
+
+    until stack.empty?
+      current_node = stack.pop
+
+      current_node.children.reverse.each do |child|
+        stack.push(child)
+      end
+
+      yield(current_node) if block_given?
+    end
+  end
+
   # Ancestor Search
   def ancestor_search(node = self, parents = [])
     return parents unless parent = node.parent
