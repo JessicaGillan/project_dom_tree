@@ -8,11 +8,7 @@ class TreeSearcher
     matches = []
 
     node.bfs do |node|
-      if node.tag.attributes.has_key? key
-        if node.tag.attributes[key].include? value
-          matches << node
-        end
-      end
+      matches << node if has_attribute?(node, key, value)
     end
 
     matches
@@ -25,20 +21,15 @@ class TreeSearcher
   def search_ancestors(node, key, value)
     matches = []
 
-    parents = node.ancestor_search
-
-    parents.each do |node|
-      if node.tag.attributes.has_key? key
-        if node.tag.attributes[key].include? value
-          matches << node
-        end
-      end
+    node.ancestor_search do |parent|
+      matches << parent if has_attribute?(parent, key, value)
     end
 
     matches
   end
 
-  def search_proc
-    # How do you do this??
+  def has_attribute?(node, key, value)
+    node.tag.attributes.has_key?(key) &&
+    node.tag.attributes[key].include?(value)
   end
 end

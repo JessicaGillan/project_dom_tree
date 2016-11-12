@@ -77,11 +77,11 @@ class Node
   end
 
   # Ancestor Search
-  def ancestor_search(node = self, parents = [])
+  def ancestor_search(node = self, parents = [], &block)
     return parents unless parent = node.parent
-    # yield(parent) if block_given? # WHY ISN'T THIS WORKING? ONLY CALLED ONCE
+    yield(parent) if block_given? # WHY ISN'T THIS WORKING? ONLY CALLED ONCE
     parents << parent
-    ancestor_search(parent, parents)
+    ancestor_search(parent, parents, &block)
   end
 
   def inspect
