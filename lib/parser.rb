@@ -1,4 +1,3 @@
-require_relative 'node'
 class Parser
 
   SELF_CLOSING = ["area",
